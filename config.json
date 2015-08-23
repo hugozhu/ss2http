@@ -1,9 +1,0 @@
-{
-    "server":"120.25.56.28",
-    "server_port":8388,
-    "local_port":1080,
-    "password":"fuckthegfw",
-    "method":"rc4-md5",
-    "timeout":600,
-    "server_parent_proxy":"shadowsocks://rc4-md5:fuckthegfw@120.25.56.28:8388"
-}
