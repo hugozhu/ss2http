@@ -376,6 +376,9 @@ func run(listenAddr string, is_http_proxy bool) {
 	} else {
 		log.Printf("starting local http proxy server at %v ...\n", listenAddr)
 		http_proxy = goproxy.NewProxyHttpServer()
+		http_proxy.OnRequest().HandleConnectFunc(func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
+			return goproxy.OkConnect, host
+		})
 		http_proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			log.Println(req.URL)
 			ctx.RoundTripper = &SSRoundTriper{}
