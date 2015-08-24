@@ -353,7 +353,9 @@ func (t *SSRoundTriper) RoundTrip(req *http.Request, ctx *goproxy.ProxyCtx) (res
 			return createServerConn(rawaddr, host)
 		},
 	}
-	client := &http.Client{Transport: tr}
+	client := &http.Client{
+		Transport: tr,
+	}
 	return client.Do(req)
 }
 
@@ -376,7 +378,15 @@ func run(listenAddr string, is_http_proxy bool) {
 	} else {
 		log.Printf("starting local http proxy server at %v ...\n", listenAddr)
 		http_proxy = goproxy.NewProxyHttpServer()
+		http_proxy.Tr.Dial = func(network, addr string) (c net.Conn, err error) {
+			c, err = net.Dial(network, addr)
+			if c, ok := c.(*net.TCPConn); err != nil && ok {
+				c.SetKeepAlive(true)
+			}
+			return
+		}
 		http_proxy.OnRequest().HandleConnectFunc(func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
+			log.Println(host)
 			return goproxy.OkConnect, host
 		})
 		http_proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
