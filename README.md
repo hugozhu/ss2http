@@ -27,3 +27,5 @@ go run ss2http.go --proxy_type http
 2015/08/23 20:50:23 available remote server ******:8888
 2015/08/23 20:50:23 starting local http proxy server at :1080 ...
 ```
+
+Cool!
